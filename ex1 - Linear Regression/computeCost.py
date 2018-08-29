@@ -21,7 +21,6 @@
 # end
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 def computeCost(X, y, theta):
     m = y.size

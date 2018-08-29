@@ -22,8 +22,8 @@
 #
 #
 #
-#
-#     % ============================================================
+#     % ===#
+# =========================================================
 #
 #     % Save the cost J in every iteration
 #     J_history(iter) = computeCost(X, y, theta);
@@ -33,17 +33,33 @@
 # end
 
 import numpy as np
-from . import computeCost
+from matplotlib import pyplot as plt
+
+def computeCost(X, y, theta):
+    m = y.size
+    hypothesis = np.dot(X, theta)
+    error_values = np.square(np.subtract(hypothesis, y))
+    sum = np.sum(error_values)
+    return sum / (2*m)
 
 def gradientDescent(X, y, theta, alpha, num_iters):
     m = y.size
     J_history = np.zeros(num_iters)
     for i in range(num_iters):
         hypothesis = np.dot(X, theta)
-        diff = np.subtract(hypothesis, y)
-        sum = np.sum(diff)
+        sum = np.dot(X.T, np.subtract(hypothesis, y))
         J_history[i] = computeCost(X, y, theta)
+        theta -= (alpha / m) * sum
+    return (theta, J_history)
 
+def plotHypothesis(x, y, theta):
+    plt.ylabel("Profit in $10,000s")
+    plt.xlabel("Population of City in 10,000s")
+    hypothesis = theta[0] + theta[1] * x
+    plt.scatter(x[:, 1], y, s=30, c='r', marker='x', label='Training data')
+    plt.plot(x, hypothesis, c='b', label='Linear Regression')
+    plt.legend(loc=4);
+    plt.show()
 
 iterations = 1500;
 alpha = 0.01;
@@ -53,4 +69,13 @@ X = np.expand_dims(X, axis=1)
 X = np.insert(X, 0, 1, axis=1)
 y = file[(..., 1)]
 theta = np.zeros(2)
-print(gradientDescent(X, y, theta, alpha, iterations))
+theta, J = gradientDescent(X, y, theta, alpha, iterations)
+# Predictions
+print([1,3.5] * theta * 10000)
+print([1, 7] * theta * 10000)
+plt.xlabel("Iterations")
+plt.ylabel("Cost function")
+plt.plot(J)
+plt.show()
+# Hypothesis function
+plotHypothesis(X, y, theta)
