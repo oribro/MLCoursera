@@ -34,6 +34,7 @@
 
 import numpy as np
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def computeCost(X, y, theta):
     m = y.size
@@ -61,6 +62,25 @@ def plotHypothesis(x, y, theta):
     plt.legend(loc=4);
     plt.show()
 
+def plotSurface(x, y, theta):
+    fig = plt.figure()
+    graph = fig.add_subplot(111, projection='3d')
+    x_axis = np.linspace(-10, 10)
+    y_axis = np.linspace(-1, 4)
+    X, Y = np.meshgrid(x_axis, y_axis)
+    Z = np.zeros((x_axis.size, y_axis.size))
+    for (i, j), v in np.ndenumerate(Z):
+        Z[i, j] = computeCost(x, y, theta=[[X[i, j]], [Y[i, j]]])
+
+    graph.plot_surface(X, Y, Z)
+    graph.set_xlabel('Theta 0')
+    graph.set_ylabel('Theta 1')
+    graph.set_zlabel('Cost Function J')
+    plt.show()
+    plt.contour(X, Y, Z)
+    plt.show()
+
+
 iterations = 1500;
 alpha = 0.01;
 file = np.loadtxt("ex1data1.txt", delimiter=",")
@@ -77,5 +97,6 @@ plt.xlabel("Iterations")
 plt.ylabel("Cost function")
 plt.plot(J)
 plt.show()
-# Hypothesis function
+# # Hypothesis function
 plotHypothesis(X, y, theta)
+plotSurface(X, y, theta)
