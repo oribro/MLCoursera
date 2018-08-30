@@ -69,8 +69,8 @@ def gradientDescentMulti(X, y, theta, alpha, num_iters):
     return (theta, J_history)
 
 
-iterations = 400;
-alpha = 0.01;
+iterations = 50;
+alpha = 0.3;
 file = np.loadtxt("ex1data2.txt", delimiter=",")
 X = file[..., :-1]
 y = file[..., -1]
@@ -83,4 +83,8 @@ plt.xlabel("Iterations")
 plt.ylabel("Cost function")
 plt.plot(J)
 plt.show()
-
+# Prediction of new data: house size 1650 and num of beds 3
+new_data = (np.array([1650, 3]) - mu) / sigma
+prediction = np.dot(theta, np.insert(new_data, 0, 1))
+# 293092.2127307553
+print(prediction)
