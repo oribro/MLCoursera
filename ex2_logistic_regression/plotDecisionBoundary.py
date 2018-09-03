@@ -49,15 +49,22 @@
 from ex2_logistic_regression.costFunction import costFunction, gradient
 from ex2_logistic_regression.plotData import plotData
 from ex2_logistic_regression.sigmoid import sigmoid
+from ex2_logistic_regression.predict import predict
 # Use Newton Conjugate Gradient to minimize theta
 from scipy.optimize import fmin_ncg
 import numpy as np
+from matplotlib import pyplot as plt
 
 def optimize_J(theta, X, y):
     return fmin_ncg(costFunction, x0=theta, fprime=gradient, args=(X, y), maxiter=400)
 
 def plotDecisionBoundary(theta, X, y):
-    plotData(X, y)
+    x1_min, x1_max = X[:, 1].min(), X[:, 1].max()
+    x2_min, x2_max = X[:, 2].min(), X[:, 2].max()
+    x1_vec, x2_vec = np.meshgrid(np.linspace(x1_min, x1_max), np.linspace(x2_min, x2_max))
+    new_X = np.column_stack((np.ones(x1_vec.flatten().size), x1_vec.flatten(), x2_vec.flatten()))
+    hypothesis = sigmoid(np.dot(new_X, theta)).reshape(x1_vec.shape)
+    plt.contour(x1_vec, x2_vec, hypothesis, levels=0.5, colors='b')
     return
 
 file = np.loadtxt("ex2data1.txt", delimiter=",")
@@ -74,4 +81,7 @@ theta = np.zeros(num_features)
 #          Hessian evaluations: 0
 # [-22.90706342   0.18820183   0.18323267]
 final_theta = optimize_J(theta, X, y)
-plotDecisionBoundary(theta, X, y)
+plotDecisionBoundary(final_theta, X, y)
+p = predict(final_theta, X)
+# 89
+print(np.mean(p == y) * 100)

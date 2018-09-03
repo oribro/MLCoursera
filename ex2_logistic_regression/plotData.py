@@ -31,21 +31,28 @@ import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.patches as mpatches
 
-def plotData(X, y):
+def plotData(X, y, labels):
     colors = ('k' if yi else 'y' for yi in y)
     markers = ('+' if yi else 'o' for yi in y)
     for x, y, c, m in zip(X[:, 0], X[:, 1], colors, markers):
         plt.scatter(x, y, c=c, marker=m)
     plt.xlabel("Exam 1 score")
     plt.ylabel("Exam 2 score")
-    admitted = mpatches.Patch(color='k', label='Admitted')
-    not_admitted = mpatches.Patch(color='y', label='Not admitted')
-    plt.legend(handles=[admitted, not_admitted], loc=1, fontsize='small')
+    true_label = mpatches.Patch(color='k', label=labels[0])
+    false_label = mpatches.Patch(color='y', label=labels[1])
+    plt.legend(handles=[true_label, false_label], loc=1, fontsize='small')
     plt.show()
-    return
+    return plt
 
 
-file = np.loadtxt("ex2data1.txt", delimiter=",")
-X = file[..., :-1]
-y = file[..., -1]
-plotData(X, y)
+file1 = np.loadtxt("ex2data1.txt", delimiter=",")
+X = file1[..., :-1]
+y = file1[..., -1]
+labels = ('Admitted', 'Not admitted')
+plotData(X, y, labels)
+
+file2 = np.loadtxt("ex2data2.txt", delimiter=",")
+X = file2[..., :-1]
+y = file2[..., -1]
+labels = ('y = 1', 'y = 0')
+plotData(X, y, labels)

@@ -23,6 +23,6 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
 
-x = np.arange(-100, 100).reshape(20, 10)
-y = sigmoid(x)
-plt.plot(x, y)
+# x = np.arange(-100, 100).reshape(20, 10)
+# y = sigmoid(x)
+# plt.plot(x, y)
