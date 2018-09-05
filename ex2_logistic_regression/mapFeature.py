@@ -16,7 +16,4 @@ def mapFeature(X1, X2):
     X = np.column_stack((X1, X2))
     return PolynomialFeatures(degree=6).fit_transform(X)
 
-X1 = np.arange(1,5)
-X2 = np.arange(-5,-1)
-mapFeature(X1, X2)
 

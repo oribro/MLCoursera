@@ -67,21 +67,21 @@ def plotDecisionBoundary(theta, X, y):
     plt.contour(x1_vec, x2_vec, hypothesis, levels=0.5, colors='b')
     return
 
-file = np.loadtxt("ex2data1.txt", delimiter=",")
-X = file[..., :-1]
-y = file[..., -1]
-X = np.insert(X, 0, 1, axis=1)
-num_features = np.size(X, 1)
-theta = np.zeros(num_features)
-# Optimization terminated successfully.
-#          Current function value: 0.204316
-#          Iterations: 25
-#          Function evaluations: 63
-#          Gradient evaluations: 207
-#          Hessian evaluations: 0
-# [-22.90706342   0.18820183   0.18323267]
-final_theta = optimize_J(theta, X, y)
-plotDecisionBoundary(final_theta, X, y)
-p = predict(final_theta, X)
-# 89
-print(np.mean(p == y) * 100)
+# file = np.loadtxt("ex2data1.txt", delimiter=",")
+# X = file[..., :-1]
+# y = file[..., -1]
+# X = np.insert(X, 0, 1, axis=1)
+# num_features = np.size(X, 1)
+# theta = np.zeros(num_features)
+# # Optimization terminated successfully.
+# #          Current function value: 0.204316
+# #          Iterations: 25
+# #          Function evaluations: 63
+# #          Gradient evaluations: 207
+# #          Hessian evaluations: 0
+# # [-22.90706342   0.18820183   0.18323267]
+# final_theta = optimize_J(theta, X, y)
+# plotDecisionBoundary(final_theta, X, y)
+# p = predict(final_theta, X)
+# # 89
+# print(np.mean(p == y) * 100)

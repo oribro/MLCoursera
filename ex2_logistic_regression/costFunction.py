@@ -47,10 +47,11 @@ def gradient(theta, X, y):
 
 
 
-file = np.loadtxt("ex2data1.txt", delimiter=",")
-X = file[..., :-1]
-y = file[..., -1]
-X = np.insert(X, 0, 1, axis=1)
-num_features = np.size(X, 1)
-theta = np.zeros(num_features)
-test_theta = np.array([-24, 0.2, 0.2])
+# file = np.loadtxt("ex2data1.txt", delimiter=",")
+# X = file[..., :-1]
+# y = file[..., -1]
+# X = np.insert(X, 0, 1, axis=1)
+# num_features = np.size(X, 1)
+# theta = np.zeros(num_features)
+# print(costFunction(theta, X , y))
+# test_theta = np.array([-24, 0.2, 0.2])
