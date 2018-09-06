@@ -41,18 +41,17 @@ def plotData(X, y, labels):
     true_label = mpatches.Patch(color='k', label=labels[0])
     false_label = mpatches.Patch(color='y', label=labels[1])
     plt.legend(handles=[true_label, false_label], loc=1, fontsize='small')
-    plt.show()
     return plt
 
 
-file1 = np.loadtxt("ex2data1.txt", delimiter=",")
-X = file1[..., :-1]
-y = file1[..., -1]
-labels = ('Admitted', 'Not admitted')
-plotData(X, y, labels)
-
-file2 = np.loadtxt("ex2data2.txt", delimiter=",")
-X = file2[..., :-1]
-y = file2[..., -1]
-labels = ('y = 1', 'y = 0')
-plotData(X, y, labels)
+# file1 = np.loadtxt("ex2data1.txt", delimiter=",")
+# X = file1[..., :-1]
+# y = file1[..., -1]
+# labels = ('Admitted', 'Not admitted')
+# plotData(X, y, labels)
+#
+# file2 = np.loadtxt("ex2data2.txt", delimiter=",")
+# X = file2[..., :-1]
+# y = file2[..., -1]
+# labels = ('y = 1', 'y = 0')
+# plotData(X, y, labels)
