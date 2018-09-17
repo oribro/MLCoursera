@@ -69,6 +69,3 @@ def displayData(X):
     plt.show()
     return
 
-# mat = io.loadmat('ex3data1.mat')
-# X = mat['X']
-# displayData(X)
