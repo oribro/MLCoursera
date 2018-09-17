@@ -33,6 +33,9 @@ import scipy.io as io
 import numpy as np
 from ex3_neural_networks.displayData import displayData
 from ex4_neural_networks_learning.nnCostFunction import nnCostFunction
+from ex4_neural_networks_learning.sigmoidGradient import sigmoidGradient
+from ex4_neural_networks_learning.randInitializeWeights import randInitializeWeights
+
 # % Load Training Data
 print('Loading and Visualizing Data ...\n')
 
@@ -89,17 +92,17 @@ print(['Cost at parameters (loaded from ex4weights): %f \n(this value should be 
 # %  continue to implement the regularization with the cost.
 # %
 #
-# fprintf('\nChecking Cost Function (w/ Regularization) ... \n')
+print('\nChecking Cost Function (w/ Regularization) ... \n')
 #
 # % Weight regularization parameter (we set this to 1 here).
-# lambda = 1;
+L = 1
+
+J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size,
+                    num_labels, X, y, L)
 #
-# J = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
-#                    num_labels, X, y, lambda);
-#
-# fprintf(['Cost at parameters (loaded from ex4weights): %f '...
-#          '\n(this value should be about 0.383770)\n'], J);
-#
+print(['Cost at parameters (loaded from ex4weights): %f '
+          '\n(this value should be about 0.383770)\n'], J)
+
 # fprintf('Program paused. Press enter to continue.\n');
 # pause;
 #
@@ -109,14 +112,14 @@ print(['Cost at parameters (loaded from ex4weights): %f \n(this value should be 
 # %  implement the gradient for the sigmoid function. You should complete the
 # %  code in the sigmoidGradient.m file.
 # %
-#
-# fprintf('\nEvaluating sigmoid gradient...\n')
-#
-# g = sigmoidGradient([-1 -0.5 0 0.5 1]);
-# fprintf('Sigmoid gradient evaluated at [-1 -0.5 0 0.5 1]:\n  ');
-# fprintf('%f ', g);
-# fprintf('\n\n');
-#
+
+print('\nEvaluating sigmoid gradient...\n')
+
+g = sigmoidGradient(np.array((-1, -0.5, 0, 0.5, 1)))
+print('Sigmoid gradient evaluated at [-1 -0.5 0 0.5 1]:\n  ')
+print('%f ', g)
+print('\n\n')
+
 # fprintf('Program paused. Press enter to continue.\n');
 # pause;
 #
@@ -127,14 +130,14 @@ print(['Cost at parameters (loaded from ex4weights): %f \n(this value should be 
 # %  implementing a function to initialize the weights of the neural network
 # %  (randInitializeWeights.m)
 #
-# fprintf('\nInitializing Neural Network Parameters ...\n')
-#
-# initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
-# initial_Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
-#
+print('\nInitializing Neural Network Parameters ...\n')
+
+initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size)
+initial_Theta2 = randInitializeWeights(hidden_layer_size, num_labels)
+
 # % Unroll parameters
-# initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
-#
+initial_nn_params = np.concatenate((initial_Theta1.flatten(), initial_Theta2.flatten()))
+
 #
 # %% =============== Part 7: Implement Backpropagation ===============
 # %  Once your cost matches up with ours, you should proceed to implement the

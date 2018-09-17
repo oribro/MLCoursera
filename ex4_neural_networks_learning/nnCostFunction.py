@@ -109,4 +109,6 @@ def nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X
     for i in range(m):
         new_y[i, y[i] - 1] = 1
     product = np.multiply(-new_y, np.log(hypothesis)) - np.multiply(1 - new_y, np.log(1 - hypothesis))
-    return np.sum(product) / m
+    J = np.sum(product) / m
+    J_reg = (np.sum(np.square(theta1[:, 1:])) + np.sum(np.square(theta2[:, 1:]))) * (L / (2*m))
+    return J + J_reg
