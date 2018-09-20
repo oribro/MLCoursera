@@ -121,6 +121,9 @@ def nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X
     delta2 = np.dot(d3.T, a2)
     Theta1_grad = delta1 / m
     Theta2_grad = delta2 / m
+    # Regularization of the gradient
+    Theta1_grad[:, 1:] = Theta1_grad[:, 1:] + L / m * theta1[:, 1:]
+    Theta2_grad[:, 1:] = Theta2_grad[:, 1:] + L / m * theta2[:, 1:]
     grad = np.concatenate((Theta1_grad.flatten(), Theta2_grad.flatten()))
     return (J_total, grad)
 

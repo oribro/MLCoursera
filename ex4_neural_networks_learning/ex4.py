@@ -35,6 +35,9 @@ from ex3_neural_networks.displayData import displayData
 from ex4_neural_networks_learning.nnCostFunction import nnCostFunction
 from ex4_neural_networks_learning.sigmoidGradient import sigmoidGradient
 from ex4_neural_networks_learning.randInitializeWeights import randInitializeWeights
+from ex4_neural_networks_learning.checkNNGradients import checkNNGradients
+from ex4_neural_networks_learning.predict import predict
+from scipy.optimize import minimize
 
 # % Load Training Data
 print('Loading and Visualizing Data ...\n')
@@ -42,7 +45,7 @@ print('Loading and Visualizing Data ...\n')
 mat = io.loadmat('ex4data1.mat')
 X = mat['X']
 y = mat['y']
-# displayData(X)
+displayData(X)
 
 
 #
@@ -149,7 +152,7 @@ initial_nn_params = np.concatenate((initial_Theta1.flatten(), initial_Theta2.fla
 print('\nChecking Backpropagation... \n');
 
 # %  Check gradients by running checkNNGradients
-#checkNNGradients
+# checkNNGradients(0)
 #
 # fprintf('\nProgram paused. Press enter to continue.\n');
 # pause;
@@ -160,18 +163,18 @@ print('\nChecking Backpropagation... \n');
 # %  continue to implement the regularization with the cost and gradient.
 # %
 #
-# fprintf('\nChecking Backpropagation (w/ Regularization) ... \n')
+print('\nChecking Backpropagation (w/ Regularization) ... \n')
 #
 # %  Check gradients by running checkNNGradients
-# lambda = 3;
-# checkNNGradients(lambda);
-#
+L = 3
+# checkNNGradients(L)
+
 # % Also output the costFunction debugging values
-# debug_J  = nnCostFunction(nn_params, input_layer_size, ...
-#                           hidden_layer_size, num_labels, X, y, lambda);
+debug_J  = nnCostFunction(nn_params, input_layer_size,
+                          hidden_layer_size, num_labels, X, y, L)[0]
 #
-# fprintf(['\n\nCost at (fixed) debugging parameters (w/ lambda = %f): %f ' ...
-#          '\n(for lambda = 3, this value should be about 0.576051)\n\n'], lambda, debug_J);
+print(['\n\nCost at (fixed) debugging parameters (w/ lambda = %f): %f '
+          '\n(for lambda = 3, this value should be about 0.576051)\n\n'], L, debug_J)
 #
 # fprintf('Program paused. Press enter to continue.\n');
 # pause;
@@ -184,32 +187,38 @@ print('\nChecking Backpropagation... \n');
 # %  advanced optimizers are able to train our cost functions efficiently as
 # %  long as we provide them with the gradient computations.
 # %
-# fprintf('\nTraining Neural Network... \n')
+print('\nTraining Neural Network... \n')
 #
 # %  After you have completed the assignment, change the MaxIter to a larger
 # %  value to see how more training helps.
-# options = optimset('MaxIter', 50);
 #
 # %  You should also try different values of lambda
-# lambda = 1;
-#
-# % Create "short hand" for the cost function to be minimized
-# costFunction = @(p) nnCostFunction(p, ...
-#                                    input_layer_size, ...
-#                                    hidden_layer_size, ...
-#                                    num_labels, X, y, lambda);
-#
-# % Now, costFunction is a function that takes in only one argument (the
-# % neural network parameters)
-# [nn_params, cost] = fmincg(costFunction, initial_nn_params, options);
-#
-# % Obtain Theta1 and Theta2 back from nn_params
-# Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
-#                  hidden_layer_size, (input_layer_size + 1));
-#
-# Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
-#                  num_labels, (hidden_layer_size + 1));
-#
+L = 0.1
+
+result = minimize(fun=nnCostFunction,
+                  x0=nn_params,
+                        args=(
+                          input_layer_size,
+                          hidden_layer_size,
+                          num_labels,
+                          X,
+                          y,
+                          L
+                      ),
+                  method='TNC',
+                  jac=True,
+                  options={'maxiter': 200}
+                )
+
+print(result)
+# % Obtain Theta1 and Theta2 back from result
+
+final_theta1 = np.reshape(result.x[0:(hidden_layer_size * (input_layer_size + 1)), ],
+                             (hidden_layer_size, input_layer_size + 1))
+final_theta2 = np.reshape(result.x[(hidden_layer_size * (input_layer_size + 1)):, ],
+                             (num_labels, hidden_layer_size + 1))
+
+
 # fprintf('Program paused. Press enter to continue.\n');
 # pause;
 #
@@ -219,9 +228,9 @@ print('\nChecking Backpropagation... \n');
 # %  displaying the hidden units to see what features they are capturing in
 # %  the data.
 #
-# fprintf('\nVisualizing Neural Network... \n')
+print('\nVisualizing Neural Network... \n')
 #
-# displayData(Theta1(:, 2:end));
+displayData(final_theta1[:, 1:])
 #
 # fprintf('\nProgram paused. Press enter to continue.\n');
 # pause;
@@ -232,8 +241,12 @@ print('\nChecking Backpropagation... \n');
 # %  neural network to predict the labels of the training set. This lets
 # %  you compute the training set accuracy.
 #
-# pred = predict(Theta1, Theta2, X);
-#
-# fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
+pred = predict(final_theta1, final_theta2, X)
 
+'''
+Obtained 100% accuracy and J = 0.063 with overfitting: lambda = 0.1, and 200 iterations. Nice!
+TODO: Test on new examples
+'''
+
+print('\nTraining Set Accuracy: %f\n', np.mean((pred == y.flatten()).astype(float)) * 100)
 

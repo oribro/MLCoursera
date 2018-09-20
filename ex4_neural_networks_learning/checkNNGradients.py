@@ -79,4 +79,3 @@ def checkNNGradients(L):
     diff = np.linalg.norm(numgrad - grad) / np.linalg.norm(numgrad + grad)
     assert diff < 10**-9
 
-checkNNGradients(0)
