@@ -35,4 +35,4 @@ import numpy as np
 def randInitializeWeights(L_in, L_out):
     # Use the suggested formula from ex description
     epsilon_init = np.sqrt(6) / np.sqrt(L_in + L_out)
-    return np.random.rand(L_out, L_in + 1) * 2 * epsilon_init - epsilon_init
+    return np.random.rand(L_out, L_in + 1) * (2 * epsilon_init) - epsilon_init

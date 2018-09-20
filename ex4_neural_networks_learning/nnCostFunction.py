@@ -87,6 +87,7 @@
 
 import numpy as np
 from ex2_logistic_regression.sigmoid import sigmoid
+from ex4_neural_networks_learning.sigmoidGradient import sigmoidGradient
 
 def nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X, y, L):
     m = X.shape[0]
@@ -111,4 +112,15 @@ def nnCostFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X
     product = np.multiply(-new_y, np.log(hypothesis)) - np.multiply(1 - new_y, np.log(1 - hypothesis))
     J = np.sum(product) / m
     J_reg = (np.sum(np.square(theta1[:, 1:])) + np.sum(np.square(theta2[:, 1:]))) * (L / (2*m))
-    return J + J_reg
+    J_total = J + J_reg
+    # Performing backpropagation
+    d3 = hypothesis - new_y
+    z2_deriv = sigmoidGradient(z2)
+    d2 = np.dot(d3, theta2[:, 1:]) * z2_deriv
+    delta1 = np.dot(d2.T, X)
+    delta2 = np.dot(d3.T, a2)
+    Theta1_grad = delta1 / m
+    Theta2_grad = delta2 / m
+    grad = np.concatenate((Theta1_grad.flatten(), Theta2_grad.flatten()))
+    return (J_total, grad)
+
