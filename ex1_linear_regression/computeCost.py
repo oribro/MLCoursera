@@ -30,13 +30,13 @@ def computeCost(X, y, theta):
     return sum / (2*m)
 
 
-file = np.loadtxt("ex1data1.txt", delimiter=",")
-X = file[(..., 0)]
-X = np.expand_dims(X, axis=1)
-X = np.insert(X, 0, 1, axis=1)
-y = file[(..., 1)]
-theta = np.zeros(2)
-print(computeCost(X, y, theta))
-theta[0] = -1
-theta[1] = 2
-print(computeCost(X, y, theta))
+# file = np.loadtxt("ex1data1.txt", delimiter=",")
+# X = file[(..., 0)]
+# X = np.expand_dims(X, axis=1)
+# X = np.insert(X, 0, 1, axis=1)
+# y = file[(..., 1)]
+# theta = np.zeros(2)
+# print(computeCost(X, y, theta))
+# theta[0] = -1
+# theta[1] = 2
+# print(computeCost(X, y, theta))

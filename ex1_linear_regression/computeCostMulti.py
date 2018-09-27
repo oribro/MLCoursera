@@ -42,12 +42,12 @@ def computeCostMulti(X, y, theta):
     return (np.dot(error_values, error_values.T)) / (2*m)
 
 
-np.set_printoptions(suppress=True)
-file = np.loadtxt("ex1data2.txt", delimiter=",")
-X = file[..., :-1]
-y = file[..., -1]
-X_norm, mu, sigma = featureNormalize(X)
-X = np.insert(X_norm, 0, 1, axis=1)
-num_features = np.size(X, 1)
-theta = np.zeros(num_features)
-print(computeCostMulti(X, y, theta))
+# np.set_printoptions(suppress=True)
+# file = np.loadtxt("ex1data2.txt", delimiter=",")
+# X = file[..., :-1]
+# y = file[..., -1]
+# X_norm, mu, sigma = featureNormalize(X)
+# X = np.insert(X_norm, 0, 1, axis=1)
+# num_features = np.size(X, 1)
+# theta = np.zeros(num_features)
+# print(computeCostMulti(X, y, theta))
