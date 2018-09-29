@@ -51,8 +51,8 @@ def featureNormalize(X):
 
     return (X_norm, mu, sigma)
 
-print('Loading data ...')
-data = np.loadtxt('ex1data2.txt', delimiter=",")
-X = data[:, :-1]
-y = data[:, -1]
-X_norm, mu, sigma = featureNormalize(X)
+# print('Loading data ...')
+# data = np.loadtxt('ex1data2.txt', delimiter=",")
+# X = data[:, :-1]
+# y = data[:, -1]
+# X_norm, mu, sigma = featureNormalize(X)
