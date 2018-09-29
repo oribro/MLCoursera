@@ -29,6 +29,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from ex5_bias_vs_variance.linearRegCostFunction import linearRegCostFunction, linearRegGradient
 from ex5_bias_vs_variance.trainLinearReg import trainLinearReg
+from ex5_bias_vs_variance.learningCurve import learningCurve
+from ex5_bias_vs_variance.polyFeatures import polyFeatures
+from ex1_linear_regression.featureNormalize import featureNormalize
 
 # % Load Training Data
 print('Loading and Visualizing Data ...\n')
@@ -36,8 +39,14 @@ print('Loading and Visualizing Data ...\n')
 # % Load from ex5data1:
 # % You will have X, y, Xval, yval, Xtest, ytest in your environment
 mat = io.loadmat('ex5data1.mat')
-X = mat['X']
-y = mat['y']
+X, y, Xval, yval, Xtest, ytest = (
+    mat['X'],
+    mat['y'],
+    mat['Xval'],
+    mat['yval'],
+    mat['Xtest'],
+    mat['ytest']
+)
 
 #  m = Number of examples
 m = X.shape[0]
@@ -92,7 +101,6 @@ print(['Gradient at theta = [1 ; 1]:  [%f; %f] '
 # %  Train linear regression with lambda = 0
 L = 0
 theta = trainLinearReg(np.hstack((np.ones((m, 1)), X)), y, L)
-print(theta)
 
 # %  Plot fit over the data
 plt.scatter(X, y, s=25, c='r', marker='x', linewidth=1.5)
@@ -113,23 +121,35 @@ plt.show()
 # %                 see a graph with "high bias" -- Figure 3 in ex5.pdf
 # %
 #
-# lambda = 0;
-# [error_train, error_val] = ...
-#     learningCurve([ones(m, 1) X], y, ...
-#                   [ones(size(Xval, 1), 1) Xval], yval, ...
-#                   lambda);
-#
-# plot(1:m, error_train, 1:m, error_val);
-# title('Learning curve for linear regression')
-# legend('Train', 'Cross Validation')
-# xlabel('Number of training examples')
-# ylabel('Error')
-# axis([0 13 0 150])
-#
-# fprintf('# Training Examples\tTrain Error\tCross Validation Error\n');
-# for i = 1:m
-#     fprintf('  \t%d\t\t%f\t%f\n', i, error_train(i), error_val(i));
-# end
+L = 0
+error_train, error_val = learningCurve(
+    np.hstack((np.ones((m, 1)), X)),
+    y,
+    np.hstack((np.ones((Xval.shape[0], 1)), Xval)),
+    yval,
+    L
+)
+plt.plot(
+    np.arange(1, m+1),
+    error_train,
+    '-b',
+    label='Training error',
+)
+plt.plot(
+    np.arange(1, m+1),
+    error_val,
+    '-g',
+    label='Validation error'
+)
+plt.title('Learning curve for linear regression')
+plt.legend()
+plt.xlabel('Number of training examples')
+plt.ylabel('Error')
+plt.axis(np.array((1, 13, 1, 150)))
+plt.show()
+print('# Training Examples\tTrain Error\tCross Validation Error\n')
+for i in range(m):
+    print('  \t%d\t\t%f\t%f\n', i, error_train[i], error_val[i])
 #
 # fprintf('Program paused. Press enter to continue.\n');
 # pause;
@@ -139,27 +159,25 @@ plt.show()
 # %  complete polyFeatures to map each example into its powers
 # %
 #
-# p = 8;
-#
+p = 8
+
 # % Map X onto Polynomial Features and Normalize
-# X_poly = polyFeatures(X, p);
-# [X_poly, mu, sigma] = featureNormalize(X_poly);  % Normalize
-# X_poly = [ones(m, 1), X_poly];                   % Add Ones
-#
+X_poly = polyFeatures(X, p)
+X_poly, _, _ = featureNormalize(X_poly)
+X_poly = np.hstack((np.ones((m, 1)), X_poly))
+
 # % Map X_poly_test and normalize (using mu and sigma)
-# X_poly_test = polyFeatures(Xtest, p);
-# X_poly_test = bsxfun(@minus, X_poly_test, mu);
-# X_poly_test = bsxfun(@rdivide, X_poly_test, sigma);
-# X_poly_test = [ones(size(X_poly_test, 1), 1), X_poly_test];         % Add Ones
-#
+X_poly_test = polyFeatures(Xtest, p)
+X_poly_test, _, _ = featureNormalize(X_poly_test)
+X_poly_test = np.hstack((np.ones((X_poly_test.shape[0], 1)), X_poly_test))
+
 # % Map X_poly_val and normalize (using mu and sigma)
-# X_poly_val = polyFeatures(Xval, p);
-# X_poly_val = bsxfun(@minus, X_poly_val, mu);
-# X_poly_val = bsxfun(@rdivide, X_poly_val, sigma);
-# X_poly_val = [ones(size(X_poly_val, 1), 1), X_poly_val];           % Add Ones
-#
-# fprintf('Normalized Training Example 1:\n');
-# fprintf('  %f  \n', X_poly(1, :));
+X_poly_val = polyFeatures(Xval, p)
+X_poly_val, _, _ = featureNormalize(X_poly_val)
+X_poly_val = np.hstack((np.ones((X_poly_val.shape[0], 1)), X_poly_val))
+
+print('Normalized Training Example 1:\n')
+print('  %f  \n', X_poly[0, :])
 #
 # fprintf('\nProgram paused. Press enter to continue.\n');
 # pause;
@@ -172,28 +190,51 @@ plt.show()
 # %  lambda = 0. You should try running the code with different values of
 # %  lambda to see how the fit and learning curve change.
 # %
-#
-# lambda = 0;
-# [theta] = trainLinearReg(X_poly, y, lambda);
-#
+
+L = 0
+theta = trainLinearReg(X_poly, y, L)
+
+# figure(2);
+error_train, error_val = learningCurve(
+    X_poly,
+    y,
+    X_poly_val,
+    yval,
+    L
+)
+plt.plot(
+    np.arange(0, m),
+    error_train,
+    '-b',
+    label='Training error',
+)
+plt.plot(
+    np.arange(0, m),
+    error_val,
+    '-g',
+    label='Validation error'
+)
+plt.title('Polynomial Regression Learning curve (lambda = {})'.format(L))
+plt.legend()
+plt.xlabel('Number of training examples')
+plt.ylabel('Error')
+plt.axis(np.array((0, 13, 0, 100)))
+plt.show()
+
 # % Plot training data and fit
 # figure(1);
-# plot(X, y, 'rx', 'MarkerSize', 10, 'LineWidth', 1.5);
-# plotFit(min(X), max(X), mu, sigma, theta, p);
-# xlabel('Change in water level (x)');
-# ylabel('Water flowing out of the dam (y)');
-# title (sprintf('Polynomial Regression Fit (lambda = %f)', lambda));
-#
-# figure(2);
-# [error_train, error_val] = ...
-#     learningCurve(X_poly, y, X_poly_val, yval, lambda);
-# plot(1:m, error_train, 1:m, error_val);
-#
-# title(sprintf('Polynomial Regression Learning Curve (lambda = %f)', lambda));
-# xlabel('Number of training examples')
-# ylabel('Error')
-# axis([0 13 0 100])
-# legend('Train', 'Cross Validation')
+plt.scatter(X, y, s=25, c='r', marker='x', linewidth=1.5)
+x = np.arange(np.min(X) - 2, np.max(X) + 5, 0.05)
+X_poly = polyFeatures(x, p)
+X_poly, _, _ = featureNormalize(X_poly)
+X_poly = np.hstack((np.ones((x.shape[0], 1)), X_poly))
+plt.plot(x, X_poly.dot(theta), linestyle='--', color='b')
+plt.xlabel('Change in water level (x)')
+plt.ylabel('Water flowing out of the dam (y)')
+plt.title('Polynomial Regression Fit (lambda = {})'.format(L))
+plt.show()
+
+
 #
 # fprintf('Polynomial Regression (lambda = %f)\n\n', lambda);
 # fprintf('# Training Examples\tTrain Error\tCross Validation Error\n');
