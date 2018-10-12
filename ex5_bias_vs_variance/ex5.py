@@ -31,6 +31,7 @@ from ex5_bias_vs_variance.linearRegCostFunction import linearRegCostFunction, li
 from ex5_bias_vs_variance.trainLinearReg import trainLinearReg
 from ex5_bias_vs_variance.learningCurve import learningCurve
 from ex5_bias_vs_variance.polyFeatures import polyFeatures
+from ex5_bias_vs_variance.validationCurve import validationCurve
 from ex1_linear_regression.featureNormalize import featureNormalize
 
 # % Load Training Data
@@ -191,7 +192,7 @@ print('  %f  \n', X_poly[0, :])
 # %  lambda to see how the fit and learning curve change.
 # %
 
-L = 0
+L = 1
 theta = trainLinearReg(X_poly, y, L)
 
 # figure(2);
@@ -225,10 +226,10 @@ plt.show()
 # figure(1);
 plt.scatter(X, y, s=25, c='r', marker='x', linewidth=1.5)
 x = np.arange(np.min(X) - 2, np.max(X) + 5, 0.05)
-X_poly = polyFeatures(x, p)
-X_poly, _, _ = featureNormalize(X_poly)
-X_poly = np.hstack((np.ones((x.shape[0], 1)), X_poly))
-plt.plot(x, X_poly.dot(theta), linestyle='--', color='b')
+X_poly_plot = polyFeatures(x, p)
+X_poly_plot, _, _ = featureNormalize(X_poly_plot)
+X_poly_plot = np.hstack((np.ones((x.shape[0], 1)), X_poly_plot))
+plt.plot(x, X_poly_plot.dot(theta), linestyle='--', color='b')
 plt.xlabel('Change in water level (x)')
 plt.ylabel('Water flowing out of the dam (y)')
 plt.title('Polynomial Regression Fit (lambda = {})'.format(L))
@@ -251,15 +252,34 @@ plt.show()
 # %  "best" lambda value.
 # %
 #
-# [lambda_vec, error_train, error_val] = ...
-#     validationCurve(X_poly, y, X_poly_val, yval);
+lambda_vec, error_train, error_val = validationCurve(
+    X_poly,
+    y,
+    X_poly_val,
+    yval
+)
 #
 # close all;
-# plot(lambda_vec, error_train, lambda_vec, error_val);
-# legend('Train', 'Cross Validation');
-# xlabel('lambda');
-# ylabel('Error');
-#
+m = lambda_vec.size
+plt.plot(
+    np.arange(0, m),
+    error_train,
+    '-b',
+    label='Training error',
+)
+plt.plot(
+    np.arange(0, m),
+    error_val,
+    '-g',
+    label='Validation error'
+)
+plt.title('Validation curve to find best lambda')
+plt.legend()
+plt.xlabel('Lambda')
+plt.ylabel('Error')
+plt.axis(np.array((0, 10, 0, 20)))
+plt.show()
+
 # fprintf('lambda\t\tTrain Error\tValidation Error\n');
 # for i = 1:length(lambda_vec)
 # 	fprintf(' %f\t%f\t%f\n', ...
