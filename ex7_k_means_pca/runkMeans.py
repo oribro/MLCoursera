@@ -1,5 +1,3 @@
-# function [centroids, idx] = runkMeans(X, initial_centroids, ...
-#                                       max_iters, plot_progress)
 # %RUNKMEANS runs the K-Means algorithm on data matrix X, where each row of X
 # %is a single example
 # %   [centroids, idx] = RUNKMEANS(X, initial_centroids, max_iters, ...
@@ -62,3 +60,26 @@
 #
 # end
 #
+
+import numpy as np
+import matplotlib.pyplot as plt
+from ex7_k_means_pca.findClosestCentroids import findClosestCentroids
+from ex7_k_means_pca.computeCentroids import computeCentroids
+from ex7_k_means_pca.plotProgresskMeans import plotProgresskMeans
+
+
+def runkMeans(X, initial_centroids, max_iters):
+    m, n = X.shape
+    K = initial_centroids.shape[0]
+    centroids = initial_centroids
+    previous_centroids = centroids
+    idx = np.zeros((m, 1), dtype=int)
+    for i in range(max_iters):
+        print('K-Means iteration {}/{}...\n'.format(i + 1, max_iters))
+        idx = findClosestCentroids(X, centroids)
+        plotProgresskMeans(X, centroids, previous_centroids, idx, K)
+        previous_centroids = centroids;
+        centroids = computeCentroids(X, idx, K)
+    plt.show()
+
+    return centroids, idx
