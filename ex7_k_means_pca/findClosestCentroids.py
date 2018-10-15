@@ -36,7 +36,7 @@ import numpy as np
 def findClosestCentroids(X, centroids):
     m = X.shape[0]
     K = centroids.shape[0]
-    idx = np.zeros((m, 1))
+    idx = np.zeros((m, 1), dtype=int)
     for i in range(m):
         # Guarantee intialized distance to be big enough
         min_distance = np.inf
