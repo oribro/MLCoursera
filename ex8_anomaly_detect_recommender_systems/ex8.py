@@ -82,7 +82,6 @@ p = multivariateGaussian(X, mu, sigma2)
 
 # %  Visualize the fit
 visualizeFit(X,  mu, sigma2)
-plt.show()
 
 # fprintf('Program paused. Press enter to continue.\n');
 # pause;
@@ -108,11 +107,11 @@ outliers = np.argwhere(p < epsilon)
 plt.scatter(
     X[outliers, 0],
     X[outliers, 1],
-    c='r',
-    marker='o',
-    linewidths=2,
-    markersize=10
+    edgecolors='r',
+    facecolors='none',
+    s=50
 )
+plt.show()
 # hold off
 #
 # fprintf('Program paused. Press enter to continue.\n');
@@ -126,22 +125,27 @@ plt.scatter(
 #
 # %  Loads the second dataset. You should now have the
 # %  variables X, Xval, yval in your environment
-# load('ex8data2.mat');
-#
+mat = io.loadmat('ex8data2.mat')
+X, Xval, yval = (
+    mat['X'],
+    mat['Xval'],
+    mat['yval']
+)
+
 # %  Apply the same steps to the larger dataset
-# [mu sigma2] = estimateGaussian(X);
-#
+mu, sigma2 = estimateGaussian(X)
+
 # %  Training set
-# p = multivariateGaussian(X, mu, sigma2);
-#
+p = multivariateGaussian(X, mu, sigma2)
+
 # %  Cross-validation set
-# pval = multivariateGaussian(Xval, mu, sigma2);
-#
+pval = multivariateGaussian(Xval, mu, sigma2)
+
 # %  Find the best threshold
-# [epsilon F1] = selectThreshold(yval, pval);
-#
-# fprintf('Best epsilon found using cross-validation: %e\n', epsilon);
-# fprintf('Best F1 on Cross Validation Set:  %f\n', F1);
-# fprintf('   (you should see a value epsilon of about 1.38e-18)\n');
-# fprintf('   (you should see a Best F1 value of 0.615385)\n');
-# fprintf('# Outliers found: %d\n\n', sum(p < epsilon));
+epsilon, F1 = selectThreshold(yval, pval)
+
+print('Best epsilon found using cross-validation: {}\n'.format(epsilon))
+print('Best F1 on Cross Validation Set:  {}\n'.format(F1))
+print('   (you should see a value epsilon of about 1.38e-18)\n')
+print('   (you should see a Best F1 value of 0.615385)\n')
+print('# Outliers found: {}\n\n'.format(sum(p < epsilon)))

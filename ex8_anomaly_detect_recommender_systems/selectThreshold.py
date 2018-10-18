@@ -48,7 +48,22 @@ import numpy as np
 
 
 def selectThreshold(yval, pval):
+    yval = yval.flatten()
     stepsize = (np.max(pval) - np.min(pval)) / 1000
     values_range = np.arange(np.min(pval), np.max(pval), stepsize)
+    bestF1 = bestEpsilon = 0
+
     for epsilon in values_range:
-        
+        predictions = np.array(pval < epsilon, dtype=int)
+        tp = np.sum((predictions == 1) & (yval == 1))
+        fp = np.sum((predictions == 1) & (yval == 0))
+        fn = np.sum((predictions == 0) & (yval == 1))
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        F1 = (2 * precision * recall) / (precision + recall)
+        if F1 > bestF1:
+            bestF1 = F1
+            bestEpsilon = epsilon
+
+    return bestEpsilon, bestF1
+
