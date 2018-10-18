@@ -38,7 +38,8 @@ import numpy as np
 
 
 def estimateGaussian(X):
+    m = X.shape[0]
     mu = np.mean(X, axis=0)
-    sigma2 = np.std(X, axis=0)
+    sigma2 = np.sum(np.square(X - mu), axis=0) / m
     return mu, sigma2
 
